@@ -73,8 +73,8 @@ signature = infer_signature(X_train, y_train)
 
 with mlflow.start_run() as run:
     
-    model = CatBoostClassifier(iterations=100, depth=2, learning_rate=1, loss_function='Logloss')
-    model.fit(titanic_train_pool, eval_set=titanic_test_pool, early_stopping_rounds=20, plot=True)
+    model = CatBoostClassifier(iterations=100, depth=2, learning_rate=1, loss_function='Logloss', allow_writing_files=False)
+    model.fit(titanic_train_pool, eval_set=titanic_test_pool, early_stopping_rounds=20, plot=False)
 
     # Predict and calculate metrics
     y_pred = model.predict(X_test)
