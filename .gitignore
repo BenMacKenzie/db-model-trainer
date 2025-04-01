@@ -48,3 +48,5 @@ htmlcov/
 # Logs
 *.log
 logs/ 
+
+catboost_info/
