@@ -50,20 +50,25 @@ titanic_test_pool = Pool(X_test, y_test, cat_features=categories)
 # COMMAND ----------
 
 experiment_name = f"/Users/ben.mackenzie@databricks.com/experiments/{experiment_name}"
+mlflow.set_experiment(experiment_name)
 
 # COMMAND ----------
 
-# Check if the experiment exists
-experiment = mlflow.get_experiment_by_name(experiment_name)
+# # Check if the experiment exists
+# experiment = mlflow.get_experiment_by_name(experiment_name)
 
-if experiment is None:
-    # Create the experiment if it does not exist
-    experiment_id = mlflow.create_experiment(experiment_name)
-else:
-    experiment_id = experiment.experiment_id
+# if experiment is None:
+#     # Create the experiment if it does not exist
+#     experiment_id = mlflow.create_experiment(experiment_name)
+# else:
+#     experiment_id = experiment.experiment_id
 
-# Set the experiment
-mlflow.set_experiment(experiment_name)
+# # Set the experiment
+# mlflow.set_experiment(experiment_name)
+
+# COMMAND ----------
+
+experiment
 
 # COMMAND ----------
 
