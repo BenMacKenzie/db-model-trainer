@@ -68,10 +68,6 @@ mlflow.set_experiment(experiment_name)
 
 # COMMAND ----------
 
-experiment
-
-# COMMAND ----------
-
 df_sample = X_train.head(2)
 signature = infer_signature(X_train, y_train)
 
