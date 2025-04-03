@@ -45,7 +45,7 @@ EXP_NAME = f"/Users/ben.mackenzie@databricks.com/{experiment_name}"
 CATALOG = "my_catalog"
 SCHEMA = "my_schema"
 VOLUME = "my_volume"
-ARTIFACT_PATH = f"dbfs:/Volumes//benmackenzie_catalog/experiments/{experiment_name}"
+ARTIFACT_PATH = f"dbfs:/Volumes/benmackenzie_catalog/experiments/{experiment_name}"
 
 mlflow.set_tracking_uri("databricks")
 mlflow.set_registry_uri("databricks-uc")
