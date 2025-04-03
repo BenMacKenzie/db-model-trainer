@@ -6,7 +6,7 @@ dbutils.widgets.text("expirement_name", "", "Expirement Name")
 
 # COMMAND ----------
 
-pip install catboost mlflow mlflow-skinny[databricks]>=2.4.1 
+pip install catboost mlflow
 
 
 # COMMAND ----------
@@ -27,6 +27,7 @@ import mlflow
 # COMMAND ----------
 
 mlflow.set_registry_uri("databricks-uc")
+mlflow.set_tracking_uri("databricks")
 
 # COMMAND ----------
 
@@ -49,22 +50,23 @@ titanic_test_pool = Pool(X_test, y_test, cat_features=categories)
 
 # COMMAND ----------
 
-experiment_name = f"/Users/ben.mackenzie@databricks.com/experiments/{experiment_name}"
-mlflow.set_experiment(experiment_name)
+#experiment_name = f"/Users/ben.mackenzie@databricks.com/experiments/{experiment_name}"
+#mlflow.set_experiment(experiment_name)
 
 # COMMAND ----------
 
-# # Check if the experiment exists
-# experiment = mlflow.get_experiment_by_name(experiment_name)
+# Check if the experiment exists
+experiment = mlflow.get_experiment_by_name(experiment_name)
 
-# if experiment is None:
-#     # Create the experiment if it does not exist
-#     experiment_id = mlflow.create_experiment(experiment_name)
-# else:
-#     experiment_id = experiment.experiment_id
+if experiment is None:
+    # Create the experiment if it does not exist
+    ARTIFACT_PATH = f"dbfs:/Volumes/benmackenzie_catalog/experiments/{experiment_name}"
+    print(ARTIFACT_PATH)
+    experiment_id = mlflow.create_experiment(experiment_name, ARTIFACT_PATH)
 
-# # Set the experiment
-# mlflow.set_experiment(experiment_name)
+
+# Set the experiment
+mlflow.set_experiment(experiment_name)
 
 # COMMAND ----------
 
