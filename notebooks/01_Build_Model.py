@@ -32,16 +32,7 @@ experiment_name = dbutils.widgets.get("experiment_name")
 
 # COMMAND ----------
 
-print(experiment_name)
-
-# COMMAND ----------
-
 EXP_NAME = f"/Users/ben.mackenzie@databricks.com/{experiment_name}"
-CATALOG = "my_catalog"
-SCHEMA = "my_schema"
-VOLUME = "test_1"
-ARTIFACT_PATH = f"dbfs:/Volumes/{CATALOG}/{SCHEMA}/{VOLUME}"
-print(ARTIFACT_PATH)
 
 mlflow.set_tracking_uri("databricks")
 mlflow.set_registry_uri("databricks-uc")
@@ -62,11 +53,6 @@ X_train, X_test, y_train, y_test = train_test_split(df, target, train_size=0.8)
 categories = ['Cabin', 'Pclass', 'Sex', 'Embarked', 'Ticket', 'PassengerId', 'Name']
 titanic_train_pool = Pool(X_train, y_train, cat_features=categories)
 titanic_test_pool = Pool(X_test, y_test, cat_features=categories)
-
-# COMMAND ----------
-
-#experiment_name = f"/Users/ben.mackenzie@databricks.com/experiments/{experiment_name}"
-#mlflow.set_experiment(experiment_name)
 
 # COMMAND ----------
 
