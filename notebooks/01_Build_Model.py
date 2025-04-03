@@ -50,7 +50,7 @@ if experiment is None:
 
 
 # Set the experiment
-mlflow.set_experiment(experiment_name)
+mlflow.set_experiment(experiment_wp_name)
 
 # COMMAND ----------
 
