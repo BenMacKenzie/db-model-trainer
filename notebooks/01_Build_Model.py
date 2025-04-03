@@ -26,11 +26,6 @@ import mlflow
 
 # COMMAND ----------
 
-mlflow.set_registry_uri("databricks-uc")
-mlflow.set_tracking_uri("databricks")
-
-# COMMAND ----------
-
 table_name = dbutils.widgets.get("table_name")
 target = dbutils.widgets.get("target")
 experiment_name = dbutils.widgets.get("experiment_name")
@@ -44,14 +39,15 @@ print(experiment_name)
 EXP_NAME = f"/Users/ben.mackenzie@databricks.com/{experiment_name}"
 CATALOG = "my_catalog"
 SCHEMA = "my_schema"
-VOLUME = "my_volume"
-ARTIFACT_PATH = f"dbfs:/Volumes/benmackenzie_catalog/experiments/{experiment_name}"
+VOLUME = "test_1"
+ARTIFACT_PATH = f"dbfs:/Volumes/{CATALOG}/{SCHEMA}/{VOLUME}"
+print(ARTIFACT_PATH)
 
 mlflow.set_tracking_uri("databricks")
 mlflow.set_registry_uri("databricks-uc")
 
 if mlflow.get_experiment_by_name(EXP_NAME) is None:
-    mlflow.create_experiment(name=EXP_NAME, artifact_location=ARTIFACT_PATH)
+    mlflow.create_experiment(name=EXP_NAME)
 mlflow.set_experiment(EXP_NAME)
 
 # COMMAND ----------
