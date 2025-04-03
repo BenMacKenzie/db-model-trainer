@@ -1,7 +1,7 @@
 # Databricks notebook source
 dbutils.widgets.text("target", "", "Target")
 dbutils.widgets.text("table_name", "", "Training Data Table")
-dbutils.widgets.text("expirement_name", "", "Expirement Name")
+dbutils.widgets.text("experiment_name", "", "Expirement Name")
 
 
 # COMMAND ----------
@@ -34,7 +34,7 @@ mlflow.set_tracking_uri("databricks")
 table_name = dbutils.widgets.get("table_name")
 df = spark.table(table_name)
 target = dbutils.widgets.get("target")
-experiment_name = dbutils.widgets.get("expirement_name")
+experiment_name = dbutils.widgets.get("experiment_name")
 
 # COMMAND ----------
 
