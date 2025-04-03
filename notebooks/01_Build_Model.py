@@ -32,12 +32,29 @@ mlflow.set_tracking_uri("databricks")
 # COMMAND ----------
 
 table_name = dbutils.widgets.get("table_name")
-df = spark.table(table_name)
 target = dbutils.widgets.get("target")
 experiment_name = dbutils.widgets.get("experiment_name")
 
 # COMMAND ----------
 
+# Check if the experiment exists
+
+experiment_name = f"/Users/ben.mackenzie@databricks.com/experiments/{experiment_name}"
+experiment = mlflow.get_experiment_by_name(experiment_name)
+
+if experiment is None:
+    # Create the experiment if it does not exist
+    ARTIFACT_PATH = f"dbfs:/Volumes/benmackenzie_catalog/experiments/{experiment_name}"
+    print(ARTIFACT_PATH)
+    experiment_id = mlflow.create_experiment(experiment_name, ARTIFACT_PATH)
+
+
+# Set the experiment
+mlflow.set_experiment(experiment_name)
+
+# COMMAND ----------
+
+df = spark.table(table_name)
 df= df.toPandas().dropna()
 target = df.pop(target)
 X_train, X_test, y_train, y_test = train_test_split(df, target, train_size=0.8)
@@ -52,21 +69,6 @@ titanic_test_pool = Pool(X_test, y_test, cat_features=categories)
 
 #experiment_name = f"/Users/ben.mackenzie@databricks.com/experiments/{experiment_name}"
 #mlflow.set_experiment(experiment_name)
-
-# COMMAND ----------
-
-# Check if the experiment exists
-experiment = mlflow.get_experiment_by_name(experiment_name)
-
-if experiment is None:
-    # Create the experiment if it does not exist
-    ARTIFACT_PATH = f"dbfs:/Volumes/benmackenzie_catalog/experiments/{experiment_name}"
-    print(ARTIFACT_PATH)
-    experiment_id = mlflow.create_experiment(experiment_name, ARTIFACT_PATH)
-
-
-# Set the experiment
-mlflow.set_experiment(experiment_name)
 
 # COMMAND ----------
 
