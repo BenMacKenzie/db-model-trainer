@@ -37,20 +37,22 @@ experiment_name = dbutils.widgets.get("experiment_name")
 
 # COMMAND ----------
 
-# Check if the experiment exists
+print(experiment_name)
 
-experiment_wp_name = f"/Users/ben.mackenzie@databricks.com/experiments/{experiment_name}"
-experiment = mlflow.get_experiment_by_name(experiment_wp_name)
+# COMMAND ----------
 
-if experiment is None:
-    # Create the experiment if it does not exist
-    ARTIFACT_PATH = f"dbfs:/Volumes/benmackenzie_catalog/experiments/{experiment_name}"
-    print(ARTIFACT_PATH)
-    experiment_id = mlflow.create_experiment(experiment_wp_name, ARTIFACT_PATH)
+EXP_NAME = f"/Users/ben.mackenzie@databricks.com/{experiment_name}"
+CATALOG = "my_catalog"
+SCHEMA = "my_schema"
+VOLUME = "my_volume"
+ARTIFACT_PATH = f"dbfs:/Volumes//benmackenzie_catalog/experiments/{experiment_name}"
 
+mlflow.set_tracking_uri("databricks")
+mlflow.set_registry_uri("databricks-uc")
 
-# Set the experiment
-mlflow.set_experiment(experiment_wp_name)
+if mlflow.get_experiment_by_name(EXP_NAME) is None:
+    mlflow.create_experiment(name=EXP_NAME, artifact_location=ARTIFACT_PATH)
+mlflow.set_experiment(EXP_NAME)
 
 # COMMAND ----------
 
