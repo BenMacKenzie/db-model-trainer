@@ -34,6 +34,10 @@ experiment_name = dbutils.widgets.get("experiment_name")
 
 # COMMAND ----------
 
+print(eval_table_name)
+
+# COMMAND ----------
+
 EXP_NAME = f"/Users/ben.mackenzie@databricks.com/{experiment_name}"
 
 mlflow.set_tracking_uri("databricks")
