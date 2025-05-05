@@ -1,6 +1,7 @@
 # Databricks notebook source
 dbutils.widgets.text("target", "", "Target")
-dbutils.widgets.text("table_name", "", "Training Data Table")
+dbutils.widgets.text("training_table_name", "", "Training Data Table")
+dbutils.widgets.text("eval_table_name", "", "Eval Data Table")
 dbutils.widgets.text("experiment_name", "", "Expirement Name")
 
 
@@ -26,7 +27,8 @@ import mlflow
 
 # COMMAND ----------
 
-table_name = dbutils.widgets.get("table_name")
+training_table_name = dbutils.widgets.get("training_table_name")
+eval_table_name = dbutils.widgets.get("eval_table_name")
 target = dbutils.widgets.get("target")
 experiment_name = dbutils.widgets.get("experiment_name")
 
@@ -43,18 +45,51 @@ mlflow.set_experiment(EXP_NAME)
 
 # COMMAND ----------
 
-df = spark.table(table_name)
-df= df.toPandas().dropna()
-target = df.pop(target)
-X_train, X_test, y_train, y_test = train_test_split(df, target, train_size=0.8)
+training_dataset = mlflow.data.load_delta(table_name=training_table_name)
+spark_train_df = training_dataset.df
+df = spark_train_df.toPandas().dropna()
+target_col = df.pop(target)
+X_train, y_train = df, target_col
+
+
+
+eval_dataset = mlflow.data.load_delta(table_name=eval_table_name)
+spark_eval_df = eval_dataset.df
+df = spark_eval_df.toPandas().dropna()
+target_col = df.pop(target)
+X_test, y_test = df, target_col
+
+
 
 # COMMAND ----------
 
-categories = ['Cabin', 'Pclass', 'Sex', 'Embarked', 'Ticket', 'PassengerId', 'Name']
-titanic_train_pool = Pool(X_train, y_train, cat_features=categories)
-titanic_test_pool = Pool(X_test, y_test, cat_features=categories)
+# MAGIC %md
+# MAGIC #### Find Categorical columns
 
 # COMMAND ----------
+
+cat_features_by_type = [col for col in df.columns if X_train.dtypes[col] == 'object']
+
+N = 10
+cat_features_by_distribution = []
+for col in df.columns:
+    if col in cat_features_by_type:
+      continue
+    if spark_train_df.select(col).distinct().count() <= N:
+        cat_features_by_distribution.append(col)
+
+cat_features = list(set(cat_features_by_type + cat_features_by_distribution))
+
+
+# COMMAND ----------
+
+#categories = ['Cabin', 'Pclass', 'Sex', 'Embarked', 'Ticket', 'PassengerId', 'Name']
+titanic_train_pool = Pool(X_train, y_train, cat_features=cat_features)
+titanic_test_pool = Pool(X_test, y_test, cat_features=cat_features)
+
+# COMMAND ----------
+
+import pandas as pd
 
 df_sample = X_train.head(2)
 signature = infer_signature(X_train, y_train)
@@ -64,27 +99,62 @@ with mlflow.start_run() as run:
     
     model = CatBoostClassifier(iterations=100, depth=2, learning_rate=1, loss_function='Logloss', allow_writing_files=False)
     model.fit(titanic_train_pool, eval_set=titanic_test_pool, early_stopping_rounds=20, plot=False)
+    model_info = mlflow.catboost.log_model(model, 'model', signature=signature, input_example=df_sample)
 
-    # Predict and calculate metrics
-    y_pred = model.predict(X_test)
-    y_pred_proba = model.predict_proba(X_test)[:, 1]
+    #Predict and calculate metrics
+    # y_pred = model.predict(X_test)
+    # y_pred_proba = model.predict_proba(X_test)[:, 1]
 
-    accuracy = accuracy_score(y_test, y_pred)
-    auc = roc_auc_score(y_test, y_pred_proba)
+    # accuracy = accuracy_score(y_test, y_pred)
+    # auc = roc_auc_score(y_test, y_pred_proba)
 
   
-    # Log model, metrics, and parameters
-    mlflow.catboost.log_model(model, 'model', signature=signature, input_example=df_sample)
+    # # Log model, metrics, and parameters
+ 
   
-    mlflow.log_metrics({
-        'test_accuracy': accuracy,
-        'test_roc_auc': auc
-    })
+    # mlflow.log_metrics({
+    #     'test_accuracy': accuracy,
+    #     'test_roc_auc': auc
+    # })
+
+   
 
     mlflow.log_params(model.get_all_params())
+    mlflow.log_input(training_dataset, context="training")
+    mlflow.set_tags({"training": training_table_name, "evaluation": eval_table_name})
 
     print(f"Logged to MLflow with run ID: {run.info.run_id}")
 
+with mlflow.start_run(run_id=run.info.run_id):
+    eval_data = pd.concat([X_test, y_test], axis=1)
+
+    results = mlflow.evaluate(
+        model=model_info.model_uri,
+        data=eval_data,
+        targets=target,
+        model_type="classifier",
+        evaluators="default"
+    )
+    mlflow.log_input(eval_dataset, context="evaluation")
+    print(f"Logged to MLflow with run ID: {run.info.run_id}")
+
+
+# COMMAND ----------
+
+import pandas as pd
+
+eval_data = pd.concat([X_test, y_test], axis=1)
+
+# Evaluate
+with mlflow.start_run():
+    results = mlflow.evaluate(
+        model=model_info.model_uri,
+        data=eval_data,
+        targets=target,
+        model_type="classifier",
+        evaluators="default"
+    )
+    mlflow.log_input(eval_dataset, context="evaluation")
 
 # COMMAND ----------
 
