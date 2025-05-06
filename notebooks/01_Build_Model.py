@@ -34,10 +34,6 @@ experiment_name = dbutils.widgets.get("experiment_name")
 
 # COMMAND ----------
 
-print(eval_table_name)
-
-# COMMAND ----------
-
 EXP_NAME = f"/Users/ben.mackenzie@databricks.com/{experiment_name}"
 
 mlflow.set_tracking_uri("databricks")
@@ -142,40 +138,3 @@ with mlflow.start_run(run_id=run.info.run_id):
     mlflow.log_input(eval_dataset, context="evaluation")
     print(f"Logged to MLflow with run ID: {run.info.run_id}")
 
-
-# COMMAND ----------
-
-import pandas as pd
-
-eval_data = pd.concat([X_test, y_test], axis=1)
-
-# Evaluate
-with mlflow.start_run():
-    results = mlflow.evaluate(
-        model=model_info.model_uri,
-        data=eval_data,
-        targets=target,
-        model_type="classifier",
-        evaluators="default"
-    )
-    mlflow.log_input(eval_dataset, context="evaluation")
-
-# COMMAND ----------
-
-import mlflow
-
-logged_model = f"runs:/{run.info.run_id}/model"
-
-
-# COMMAND ----------
-
-
-catalog = "bmac"
-schema = "default"
-model_name = "titanic"
-
-#mlflow.register_model(logged_model, f"{catalog}.{schema}.{model_name}")
-
-# COMMAND ----------
-
-#model = mlflow.catboost.load_model(f"models:/{catalog}.{schema}.{model_name}@champion")
