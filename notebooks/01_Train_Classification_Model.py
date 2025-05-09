@@ -84,8 +84,8 @@ cat_features = list(set(cat_features_by_type + cat_features_by_distribution))
 # COMMAND ----------
 
 #categories = ['Cabin', 'Pclass', 'Sex', 'Embarked', 'Ticket', 'PassengerId', 'Name']
-titanic_train_pool = Pool(X_train, y_train, cat_features=cat_features)
-titanic_test_pool = Pool(X_test, y_test, cat_features=cat_features)
+train_pool = Pool(X_train, y_train, cat_features=cat_features)
+test_pool = Pool(X_test, y_test, cat_features=cat_features)
 
 # COMMAND ----------
 
@@ -98,7 +98,7 @@ signature = infer_signature(X_train, y_train)
 with mlflow.start_run() as run:
     
     model = CatBoostClassifier(iterations=100, depth=2, learning_rate=1, loss_function='Logloss', allow_writing_files=False)
-    model.fit(titanic_train_pool, eval_set=titanic_test_pool, early_stopping_rounds=20, plot=False)
+    model.fit(train_pool, eval_set=test_pool, early_stopping_rounds=20, plot=False)
     model_info = mlflow.catboost.log_model(model, 'model', signature=signature, input_example=df_sample)
 
     #Predict and calculate metrics
