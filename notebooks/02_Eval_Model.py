@@ -24,6 +24,15 @@ model_version = dbutils.widgets.get("model_version")
 
 # COMMAND ----------
 
+EXP_NAME = f"/Users/ben.mackenzie@databricks.com/{experiment_name}"
+
+
+if mlflow.get_experiment_by_name(EXP_NAME) is None:
+    mlflow.create_experiment(name=EXP_NAME)
+mlflow.set_experiment(EXP_NAME)
+
+# COMMAND ----------
+
 # eval_dataset = mlflow.data.load_delta(table_name=eval_table_name)
 # spark_eval_df = eval_dataset.df
 # df = spark_eval_df.toPandas().dropna()
