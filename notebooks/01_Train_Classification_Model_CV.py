@@ -80,7 +80,8 @@ params = {
     'cat_features': cat_features,
     'early_stopping_rounds': 10,
     'random_seed': 42,
-    'verbose': False
+    'verbose': False,
+    'train_dir': '/tmp/catboost_info'
 }
 
 cv_dataset = Pool(X, y, cat_features=cat_features)
