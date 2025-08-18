@@ -1,5 +1,4 @@
 # Databricks notebook source
-# MAGIC
 # MAGIC %pip install git+https://github.com/mlflow/mlflow@mlflow-3 catboost
 # MAGIC dbutils.library.restartPython()
 # MAGIC
@@ -30,8 +29,9 @@ experiment_name = dbutils.widgets.get("experiment_name")
 
 # COMMAND ----------
 
-EXP_NAME = f"/Users/ben.mackenzie@databricks.com/{experiment_name}"
+user = user = dbutils.notebook.entry_point.getDbutils().notebook().getContext().userName().get()
 
+EXP_NAME = f"/Users/{user}/{experiment_name}"
 
 if mlflow.get_experiment_by_name(EXP_NAME) is None:
     mlflow.create_experiment(name=EXP_NAME)

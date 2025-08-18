@@ -3,7 +3,6 @@ dbutils.widgets.text("target", "", "Target")
 dbutils.widgets.text("training_table_name", "", "Training Data Table")
 dbutils.widgets.text("eval_table_name", "", "Eval Data Table")
 dbutils.widgets.text("experiment_name", "", "Expirement Name")
-dbutils.widgets.text("experiment_base"),"", "Experiment Base"
 
 
 # COMMAND ----------
@@ -29,14 +28,13 @@ training_table_name = dbutils.widgets.get("training_table_name")
 eval_table_name = dbutils.widgets.get("eval_table_name")
 target = dbutils.widgets.get("target")
 experiment_name = dbutils.widgets.get("experiment_name")
-experiment_base = dbutils.widgets.get("experiment_base")
+
 
 # COMMAND ----------
 
-EXP_NAME = f"{expirement_base}/{experiment_name}"
+user = user = dbutils.notebook.entry_point.getDbutils().notebook().getContext().userName().get()
 
-mlflow.set_tracking_uri("databricks")
-mlflow.set_registry_uri("databricks-uc")
+EXP_NAME = f"/Users/{user}/{experiment_name}"
 
 if mlflow.get_experiment_by_name(EXP_NAME) is None:
     mlflow.create_experiment(name=EXP_NAME)
