@@ -1,5 +1,4 @@
 # Databricks notebook source
-# MAGIC %pip uninstall -y mlflow-skinny
 # MAGIC %pip install mlflow catboost
 # MAGIC dbutils.library.restartPython()
 
