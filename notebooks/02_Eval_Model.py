@@ -23,6 +23,7 @@ model_version = dbutils.widgets.get("model_version")
 
 # COMMAND ----------
 
+import mlflow
 user = user = dbutils.notebook.entry_point.getDbutils().notebook().getContext().userName().get()
 
 EXP_NAME = f"/Users/{user}/{experiment_name}"
