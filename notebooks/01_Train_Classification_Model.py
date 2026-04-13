@@ -8,7 +8,7 @@ dbutils.widgets.text("experiment_name", "", "Expirement Name")
 # COMMAND ----------
 
 # MAGIC
-# MAGIC %pip install git+https://github.com/mlflow/mlflow@mlflow-3 catboost
+# MAGIC %pip install mlflow catboost
 # MAGIC dbutils.library.restartPython()
 # MAGIC
 
