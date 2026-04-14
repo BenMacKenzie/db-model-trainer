@@ -121,7 +121,7 @@ with mlflow.start_run() as run:
 
     print(f"Logged to MLflow with run ID: {run.info.run_id}")
 
-dbutils.jobs.taskValues.set(key="model_uri", value=model_info.model_uri)
-dbutils.jobs.taskValues.set(key="mlflow_run_id", value=run.info.run_id)
+
+dbutils.jobs.taskValues.set(key="model_uri", value=f"runs:/{run.info.run_id}/model")
 
 
