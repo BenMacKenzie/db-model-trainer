@@ -102,7 +102,7 @@ scores = cv(
         plot=False
     )
 best_iteration = scores['test-AUC-mean'].idxmax()
-params["iterations"] = best_iteration
+params["iterations"] = best_iteration+1
 model = CatBoostClassifier(**params)
 model.fit(X, y, cat_features=cat_features)
 
