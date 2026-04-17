@@ -43,6 +43,15 @@ mlflow.set_experiment(EXP_NAME)
 
 # COMMAND ----------
 
+catalog = dbutils.widgets.get("catalog")                                                                                                                                                                                                          
+schema = dbutils.widgets.get("schema")                                                                                                                                                                                                            
+run_id = spark.conf.get("spark.databricks.job.runId", "local")                                                                                                                                                                                    
+tmpdir = f"/Volumes/{catalog}/{schema}/tmp/{run_id}"                                                                                                                                                                                              
+os.makedirs(tmpdir, exist_ok=True)                                                                                                                                                                                                                
+os.environ["TMPDIR"] = tmpdir  
+
+# COMMAND ----------
+
 spark_df = spark.table(training_table_name)
 df = spark_df.toPandas().dropna()
 y = df.pop(target)
@@ -80,8 +89,7 @@ params = {
     'cat_features': cat_features,
     'early_stopping_rounds': 10,
     'random_seed': 42,
-    'verbose': False,
-    'train_dir': '/tmp/catboost_info'
+    'verbose': False
 }
 
 cv_dataset = Pool(X, y, cat_features=cat_features)
