@@ -48,8 +48,8 @@ except:
     run_id = "local"
 
 tmpdir = f"/Volumes/{catalog}/{schema}/training/{run_id}" 
-
-os.makedirs(tmpdir, exist_ok=True) os.environ["TMPDIR"] = tmpdir 
+os.makedirs(tmpdir, exist_ok=True)
+os.environ["TMPDIR"] = tmpdir 
 
 # COMMAND ----------
 
