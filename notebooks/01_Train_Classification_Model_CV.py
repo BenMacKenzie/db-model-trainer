@@ -46,7 +46,7 @@ mlflow.set_experiment(EXP_NAME)
 catalog = dbutils.widgets.get("catalog")                                                                                                                                                                                                          
 schema = dbutils.widgets.get("schema")                                                                                                                                                                                                            
 run_id = spark.conf.get("spark.databricks.job.runId", "local")                                                                                                                                                                                    
-tmpdir = f"/Volumes/{catalog}/{schema}/tmp/{run_id}"                                                                                                                                                                                              
+tmpdir = f"/Volumes/{catalog}/{schema}/training/{run_id}"                                                                                                                                                                                              
 os.makedirs(tmpdir, exist_ok=True)                                                                                                                                                                                                                
 os.environ["TMPDIR"] = tmpdir  
 
