@@ -42,14 +42,9 @@ mlflow.set_experiment(EXP_NAME)
 # COMMAND ----------
 
 import os
+import tempfile
 
-try: 
-    run_id = dbutils.notebook.entry_point.getDbutils().notebook().getContext().currentRunId().toString()
-except: 
-    run_id = "local"
-
-tmpdir = f"/Volumes/{catalog}/{schema}/training/{run_id}" 
-os.makedirs(tmpdir, exist_ok=True)
+tmpdir = tempfile.mkdtemp()
 os.environ["TMPDIR"] = tmpdir 
 
 # COMMAND ----------
