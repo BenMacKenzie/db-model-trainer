@@ -5,10 +5,6 @@
 
 # COMMAND ----------
 
-
-
-# COMMAND ----------
-
 dbutils.widgets.text("target", "", "Target")
 dbutils.widgets.text("training_table_name", "", "Training Data Table")
 dbutils.widgets.text("eval_table_name", "", "Eval Data Table")
@@ -43,12 +39,17 @@ mlflow.set_experiment(EXP_NAME)
 
 # COMMAND ----------
 
-catalog = dbutils.widgets.get("catalog")                                                                                                                                                                                                          
-schema = dbutils.widgets.get("schema")                                                                                                                                                                                                            
-run_id = spark.conf.get("spark.databricks.job.runId", "local")                                                                                                                                                                                    
-tmpdir = f"/Volumes/{catalog}/{schema}/training/{run_id}"                                                                                                                                                                                              
-os.makedirs(tmpdir, exist_ok=True)                                                                                                                                                                                                                
-os.environ["TMPDIR"] = tmpdir  
+catalog = dbutils.widgets.get("catalog")
+schema = dbutils.widgets.get("schema")
+
+try: 
+    run_id = dbutils.notebook.entry_point.getDbutils().notebook().getContext().currentRunId().toString()
+except: 
+    run_id = "local"
+
+tmpdir = f"/Volumes/{catalog}/{schema}/training/{run_id}" 
+
+os.makedirs(tmpdir, exist_ok=True) os.environ["TMPDIR"] = tmpdir 
 
 # COMMAND ----------
 
