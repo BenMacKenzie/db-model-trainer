@@ -26,6 +26,8 @@ training_table_name = dbutils.widgets.get("training_table_name")
 eval_table_name = dbutils.widgets.get("eval_table_name")
 target = dbutils.widgets.get("target")
 experiment_name = dbutils.widgets.get("experiment_name")
+catalog = dbutils.widgets.get("catalog")
+schema = dbutils.widgets.get("schema")
 
 # COMMAND ----------
 
@@ -39,8 +41,7 @@ mlflow.set_experiment(EXP_NAME)
 
 # COMMAND ----------
 
-catalog = dbutils.widgets.get("catalog")
-schema = dbutils.widgets.get("schema")
+import os
 
 try: 
     run_id = dbutils.notebook.entry_point.getDbutils().notebook().getContext().currentRunId().toString()
