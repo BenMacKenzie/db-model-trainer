@@ -92,9 +92,7 @@ params = {
     'early_stopping_rounds': 10,
     'random_seed': 42,
     'verbose': False,
-    'train_dir': tmpdir,
-    'logging_dir': tmpdir
-
+    'train_dir': tmpdir
 }
 
 cv_dataset = Pool(X, y, cat_features=cat_features)
